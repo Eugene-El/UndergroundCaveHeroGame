@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using IGameFramework.GameLogicElements;
+using IGameFramework.TileMaps;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,6 +14,7 @@ namespace UndergroundCaveHero
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         
+
         public MyGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -26,7 +29,11 @@ namespace UndergroundCaveHero
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            graphics.PreferredBackBufferWidth = 800;
+            graphics.PreferredBackBufferHeight = 600;
+            graphics.ApplyChanges();
+
+            IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -40,7 +47,13 @@ namespace UndergroundCaveHero
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            TileMap.Initialize(Content.Load<Texture2D>(@"Graphics\Tilesets\Tileset"));
+            TileMap.SetTileAtCell(3, 3, 1, 10);
+
+            Camera.WorldRectangle = new Rectangle(0, 0, 160 * 32, 12 * 32);
+            Camera.Position = Vector2.Zero;
+            Camera.ViewPortWidth = 800;
+            Camera.ViewPortHeight = 600;
         }
 
         /// <summary>
@@ -62,7 +75,10 @@ namespace UndergroundCaveHero
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            
+
+
+
 
             base.Update(gameTime);
         }
@@ -73,9 +89,12 @@ namespace UndergroundCaveHero
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            TileMap.Draw(spriteBatch);
+            spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
